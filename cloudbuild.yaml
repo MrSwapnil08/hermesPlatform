@@ -1,10 +1,17 @@
 steps:
   # Step 1: Install Python dependencies
+  # Installs Python packages listed in utils/requirements.txt using pip.
+  # --user ensures packages are installed in the user directory (not system-wide).
   - name: 'python'
     entrypoint: pip
     args: ["install", "-r", "utils/requirements.txt", "--user"]
 
   # Step 2: Run the script to upload DAGs and Data to Composer bucket
+  # Executes a custom Python script (add_dags_to_composer.py) that uploads DAGs and data to GCS (Composer bucket).
+  #It passes three parameters:
+      #_DAGS_DIRECTORY: Local path of DAG files
+      #_DAGS_BUCKET: GCS bucket path for Cloud Composer
+      #_DATA_DIRECTORY: Local path of any required data files
   - name: 'python'
     entrypoint: python
     args:
@@ -13,10 +20,12 @@ steps:
       - "--dags_bucket=${_DAGS_BUCKET}"
       - "--data_directory=${_DATA_DIRECTORY}"
 
+# Enables centralized logging in Google Cloud Logging.
 options:
   logging: CLOUD_LOGGING_ONLY
 
+#These substitution variables are used in the second step as environment parameters.
 substitutions:
   _DAGS_DIRECTORY: "workflows/"
-  _DAGS_BUCKET: "us-central1-demo-instance-9e2e6451-bucket"
+  _DAGS_BUCKET: "us-east1-composerenvswap-b2e75f78-bucket"
   _DATA_DIRECTORY: "data/"

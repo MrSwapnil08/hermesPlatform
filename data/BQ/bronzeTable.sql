@@ -1,16 +1,20 @@
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.orders`(
+-- 🔹 Create external table for ORDERS in bronze layer
+-- Reads JSON data directly from GCS landing zone (no data stored in BigQuery yet)
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.orders`(
     order_id INT64,
     customer_id INT64,
     order_date STRING,
     total_amount FLOAT64,
-    updated_at STRING
+    updated_at STRING   -- Used for incremental loads or tracking changes
 )
 OPTIONS (
   format = 'JSON',
-  uris = ['gs://retailer-datalake-project-27032025/landing/retailer-db/orders/*.json']
+  uris = ['gs://datalake-project-buckettt/landing/retailer-db/orders/*.json']  -- GCS path to landing files
 );
 
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.customers`
+
+-- 🔹 External table for CUSTOMERS
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.customers`
 (
     customer_id INT64,
     name STRING,
@@ -19,10 +23,12 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.customer
 )
 OPTIONS (
     format = 'JSON',
-    uris = ['gs://retailer-datalake-project-27032025/landing/retailer-db/customers/*.json']
+    uris = ['gs://datalake-project-buckettt/landing/retailer-db/customers/*.json']
 );
 
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.products`
+
+-- 🔹 External table for PRODUCTS
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.products`
 (
     product_id INT64,
     name STRING,
@@ -32,10 +38,12 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.products
 )
 OPTIONS (
     format = 'JSON',
-    uris = ['gs://retailer-datalake-project-27032025/landing/retailer-db/products/*.json']
+    uris = ['gs://datalake-project-buckettt/landing/retailer-db/products/*.json']
 );
 
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.categories`
+
+-- 🔹 External table for CATEGORIES
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.categories`
 (
     category_id INT64,
     name STRING,
@@ -43,10 +51,12 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.categori
 )
 OPTIONS (
     format = 'JSON',
-    uris = ['gs://retailer-datalake-project-27032025/landing/retailer-db/categories/*.json']
+    uris = ['gs://datalake-project-buckettt/landing/retailer-db/categories/*.json']
 );
 
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.order_items`
+
+-- 🔹 External table for ORDER ITEMS
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.order_items`
 (
     order_item_id INT64,
     order_id INT64,
@@ -57,11 +67,14 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.order_it
 )
 OPTIONS (
     format = 'JSON',
-    uris = ['gs://retailer-datalake-project-27032025/landing/retailer-db/order_items/*.json']
+    uris = ['gs://datalake-project-buckettt/landing/retailer-db/order_items/*.json']
 );
--------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------
 -- Suppliers Table
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.suppliers` (
+-- 🔹 External table for SUPPLIERS
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.suppliers` (
     supplier_id INT64,
     supplier_name STRING,
     contact_name STRING,
@@ -74,11 +87,12 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.supplier
 )
 OPTIONS (
   format = 'JSON',
-  uris = ['gs://retailer-datalake-project-27032025/landing/supplier-db/suppliers/*.json']
+  uris = ['gs://datalake-project-buckettt/landing/supplier-db/suppliers/*.json']
 );
 
--- Product Suppliers Table (Mapping suppliers to products)
-CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.product_suppliers` (
+
+-- 🔹 External table for PRODUCT_SUPPLIERS (link between products and their suppliers)
+CREATE EXTERNAL TABLE IF NOT EXISTS `omega-art-450811-b0.bronze_dataset1.product_suppliers` (
     supplier_id INT64,
     product_id INT64,
     supply_price FLOAT64,
@@ -86,12 +100,14 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `avd-databricks-demo.bronze_dataset.product_
 )
 OPTIONS (
   format = 'JSON',
-  uris = ['gs://retailer-datalake-project-27032025/landing/supplier-db/product_suppliers/*.json']
+  uris = ['gs://datalake-project-buckettt/landing/supplier-db/product_suppliers/*.json']
 );
 
--------------------------------------------------------------------------------------------------------------
 
-CREATE OR REPLACE EXTERNAL TABLE `avd-databricks-demo.bronze_dataset.customer_reviews` (
+-----------------------------------------------------------------------------------------------------------
+-- 🔹 External table for CUSTOMER REVIEWS
+-- This one reads from Parquet files instead of JSON
+CREATE OR REPLACE EXTERNAL TABLE `omega-art-450811-b0.bronze_dataset1.customer_reviews` (
   id STRING,
   customer_id INT64,
   product_id INT64,
@@ -101,7 +117,5 @@ CREATE OR REPLACE EXTERNAL TABLE `avd-databricks-demo.bronze_dataset.customer_re
 )
 OPTIONS (
   format = 'PARQUET',
-  uris = ['gs://retailer-datalake-project-27032025/landing/customer_reviews/customer_reviews_*.parquet']
+  uris = ['gs://datalake-project-buckettt/landing/customer_reviews/customer_reviews_*.parquet']
 );
-
--------------------------------------------------------------------------------------------------------------
